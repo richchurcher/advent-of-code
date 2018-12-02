@@ -46,11 +46,6 @@ mod test {
     }
 
     #[test]
-    fn calibrate_progressive_returns_progressive_sum () {
-        assert_eq!(calibrate_progressive(&vec![1, -2, 3]), [1, -1, 2])
-    }
-
-    #[test]
     fn calibrate_until_match_finds_the_first_matching_value () {
         assert_eq!(calibrate_until_match(&vec![1, -2, 3, 1]), 2)
     }
