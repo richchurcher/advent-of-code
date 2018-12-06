@@ -7,6 +7,6 @@ authors = ["Rich Churcher <rich.churcher@gmail.com>"]
 bench = false
 
 [dependencies]
-aoc-runner = "*"
-aoc-runner-derive = "*"
+aoc-runner = "0.2.0"
+aoc-runner-derive = "0.2.0"
 

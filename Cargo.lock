@@ -2,18 +2,18 @@
 name = "advent-of-code-2018"
 version = "0.1.0"
 dependencies = [
- "aoc-runner 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "aoc-runner-derive 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aoc-runner 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aoc-runner-derive 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "aoc-runner"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "aoc-runner-derive"
-version = "0.1.5"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "aoc-runner-internal 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -99,8 +99,8 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
-"checksum aoc-runner 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f9582962ee1abe7e86b9e1a6223f1424c9cf436e212f3c657df8300145260fad"
-"checksum aoc-runner-derive 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "4f4bd2a64883d3e0b0bc3fc0084a29d4d81a384c29e91755bbdb02ccc0565f42"
+"checksum aoc-runner 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "c2e33c102c9671af73579913168ad1eb340d1992858440538562984b9810fef3"
+"checksum aoc-runner-derive 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "71eea144ee139edd5fecdf8fe2b7f0e9f7736d722bb71dda08b0522426eb9e19"
 "checksum aoc-runner-internal 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "274b0ba7f3669a45ec0aaacf94eb032a749de880ab776091576cca94037c9982"
 "checksum itoa 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "1306f3464951f30e30d12373d31c79fbd52d236e5e896fd92f96ec7babbbe60b"
 "checksum proc-macro2 0.4.24 (registry+https://github.com/rust-lang/crates.io-index)" = "77619697826f31a02ae974457af0b29b723e5619e113e9397b8b82c6bd253f09"
