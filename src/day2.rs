@@ -49,10 +49,9 @@ pub fn find_similar_ids<'a> (needle: &str, haystack: &'a [&str]) -> Option<&'a s
 
 #[aoc(day2, part2)]
 pub fn find_common_letters (input: &str) -> Option<String> {
-    let mut ids = input
+    let ids = input
         .lines()
         .collect::<Vec<_>>();
-    ids.sort();
     for (i, id) in ids.iter().enumerate() {
         let next_index = i + 1;
         let similar = match find_similar_ids(id, &ids[next_index..]) {
