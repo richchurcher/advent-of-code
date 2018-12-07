@@ -22,7 +22,7 @@ impl Claim {
 
 #[aoc_generator(day3)]
 pub fn parse_claims (input: &str) -> Result<Vec<Claim>, ParseIntError> {
-    let re = Regex::new(r"#([\d]+) @ ([\d]+),([\d]+): ([\d]+)x([\d]+)\n").unwrap();
+    let re = Regex::new(r"#([\d]+) @ ([\d]+),([\d]+): ([\d]+)x([\d]+)").unwrap();
     let mut claims: Vec<Claim> = vec![];
 
     for cap in re.captures_iter(input) {
