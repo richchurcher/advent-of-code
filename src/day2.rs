@@ -29,7 +29,6 @@ pub fn find_checksum (ids: &str) -> u32 {
     }
     twos * threes
 }
-
 pub fn compare_ids (a: &str, b: &str) -> bool {
     let similar = a.chars().zip(b.chars())
         .filter(|&(a, b)| a == b)
@@ -70,23 +69,28 @@ pub fn find_common_letters (input: &str) -> Option<String> {
 
 #[cfg(test)]
     #[test]
-    fn has_n_dups_returns_true_for_two_duplicate_letters () {
-        assert_eq!(has_n_dups("abbcde", 2), true)
+    fn count_dups_correct_for_no_duplicate_letters () {
+        assert_eq!(count_dups("abcdef"), (0, 0))
     }
 
     #[test]
-    fn has_n_dups_returns_false_for_three_duplicate_letters () {
-        assert_eq!(has_n_dups("abbbcde", 2), false)
+    fn count_dups_correct_for_two_duplicate_letters () {
+        assert_eq!(count_dups("abbcde"), (1, 0))
     }
 
     #[test]
-    fn has_n_dups_returns_true_for_three_duplicate_letters () {
-        assert_eq!(has_n_dups("abbbcde", 3), true)
+    fn count_dups_correct_for_three_duplicate_letters () {
+        assert_eq!(count_dups("abbbcde"), (0, 1))
     }
 
     #[test]
-    fn has_n_dups_returns_false_for_four_duplicate_letters () {
-        assert_eq!(has_n_dups("abbbbcde", 3), false)
+    fn count_dups_correct_for_four_duplicate_letters () {
+        assert_eq!(count_dups("abbbbcde"), (0, 0))
+    }
+
+    #[test]
+    fn count_dups_correct_for_twos_and_threes () {
+        assert_eq!(count_dups("abbcccde"), (1, 1))
     }
 
     #[test]
