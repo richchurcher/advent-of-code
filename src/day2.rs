@@ -1,34 +1,35 @@
 use std::collections::HashSet;
 
-pub fn has_n_dups (id: &str, n_dups: usize) -> bool {
+#[aoc(day2, part1)]
+pub fn find_checksum (ids: &str) -> u32 {
+    let (twos, threes) = ids
+        .lines()
+        .fold((0, 0), |counts, id| {
+            let dups = count_dups(id);
+            (counts.0 + dups.0, counts.1 + dups.1)
+        });
+    twos * threes        
+}
+
+pub fn count_dups (id: &str) -> (u32, u32) {
+    let (mut twos, mut threes) = (false, false);
     let mut unique_chars = HashSet::new();
 
     for c in id.chars() {
         let unique = unique_chars.insert(c);
         if !unique {
-          if id.matches(c).count() == n_dups {
-              return true;
-          }
+            let count = id.matches(c).count();
+            if count == 2 {
+                twos = true;
+            }
+            if count == 3 {
+                threes = true;
+            }
         }
     }
-    false
+    (twos as u32, threes as u32)
 }
 
-#[aoc(day2, part1)]
-pub fn find_checksum (ids: &str) -> u32 {
-    let mut twos = 0;
-    let mut threes = 0;
-
-    for id in ids.lines() {
-        if has_n_dups(id, 2) {
-            twos += 1;
-        }
-        if has_n_dups(id, 3) {
-            threes += 1;
-        }
-    }
-    twos * threes
-}
 pub fn compare_ids (a: &str, b: &str) -> bool {
     let similar = a.chars().zip(b.chars())
         .filter(|&(a, b)| a == b)
