@@ -55,56 +55,25 @@ pub fn parse_claims (input: &str) -> Result<Vec<Claim>, ParseIntError> {
     Ok(claims)
 }
 
-pub fn sheet_dimensions (claims: &[Claim]) -> (u32, u32) {
-    let mut right = 0;
-    let mut bottom = 0;
-
-    for claim in claims.iter() {
-        let r = claim.left + claim.width;
-        if r > right {
-            right = r;
-        }
-        let b = claim.top + claim.height;
-        if b > bottom {
-            bottom = b;
-        }
-    }
-    (right, bottom)
-}
-
-pub fn has_conflict (loc: (u32, u32), claims: &[Claim]) -> bool {
-    let mut overlaps = 0;
-
-    for claim in claims.iter() {
-        if claim.includes(loc) {
-            overlaps += 1;
-        }
-
-        if overlaps == 2 {
-            return true;
-        }
-    }
-    false
-}
-
 #[aoc(day3, part1)]
 pub fn conflict_area (claims: &[Claim]) -> u32 {
-    let (sheet_width, sheet_height) = sheet_dimensions(claims);
-    let mut sheet: Vec<Vec<bool>> = vec![];
+    let mut points = HashSet::<(u32, u32)>::new();
+    let mut conflicts = 0;
 
-    for top in 0..sheet_height {
-        let mut conflicts: Vec<bool> = vec![];
-        for left in 0..sheet_width {
-            conflicts.push(has_conflict((left, top), claims));
+    for claim in claims.iter() {
+        let right = claim.left + claim.width;
+        let bottom = claim.top + claim.height;
+
+        for y in claim.top..bottom {
+            for x in claim.left..right {
+                let occupied = points.insert((x, y));
+                if occupied {
+                    conflicts += 1;
+                }
+            }
         }
-        sheet.push(conflicts);
     }
-
-    sheet
-        .iter()
-        .fold(0, |inches, row| inches + row
-            .iter()
-            .fold(0, |sum, col| sum + *col as u32))
+    conflicts
 }
 
 #[aoc(day3, part2)]
@@ -112,6 +81,10 @@ pub fn best_claim (claims: &[Claim]) -> u32 {
     let mut conflicts: HashSet<&Claim> = HashSet::new();
 
     for claim in claims.iter() {
+        if conflicts.contains(claim) {
+            continue;
+        }
+
         for compare in claims.iter() {
             if claim.id == compare.id {
                 continue;
@@ -138,62 +111,6 @@ pub fn best_claim (claims: &[Claim]) -> u32 {
             ]),
             parse_claims("#1 @ 829,837: 11x22\n#2 @ 14,171: 10x16\n")
         )
-    }
-
-    #[test]
-    fn sheet_dimensions_finds_largest_right_and_bottom_positions () {
-        assert_eq!(
-            sheet_dimensions(&vec![
-                Claim{ id: 1, left: 89, top: 10, width: 10, height: 33 },
-                Claim{ id: 2, left: 13, top: 91, width: 20, height: 10 },
-                Claim{ id: 3, left: 84, top: 85, width: 15, height: 5 },
-            ]),
-            (99, 101)
-        )
-    }
-
-    #[test]
-    fn has_conflict_returns_false_for_1_overlap () {
-        let claims = &vec![
-            // #1 @ 1,3: 4x4
-            // #2 @ 3,1: 4x4
-            // #3 @ 5,5: 2x2
-            Claim{ id: 1, left: 1, top: 3, width: 4, height: 4 },
-            Claim{ id: 2, left: 3, top: 1, width: 4, height: 4 },
-            Claim{ id: 3, left: 5, top: 5, width: 2, height: 2 },
-        ];
-        assert_eq!(has_conflict((3, 1), claims), false)
-    }
-
-    #[test]
-    fn has_conflict_returns_true_for_2_overlaps () {
-        let claims = &vec![
-            Claim{ id: 1, left: 1, top: 3, width: 4, height: 4 },
-            Claim{ id: 2, left: 3, top: 1, width: 4, height: 4 },
-            Claim{ id: 3, left: 5, top: 5, width: 2, height: 2 },
-        ];
-        assert_eq!(has_conflict((3, 3), claims), true)
-    }
-
-    #[test]
-    fn has_conflict_returns_false_for_0_overlaps () {
-        let claims = &vec![
-            Claim{ id: 1, left: 1, top: 3, width: 4, height: 4 },
-            Claim{ id: 2, left: 3, top: 1, width: 4, height: 4 },
-            Claim{ id: 3, left: 5, top: 5, width: 2, height: 2 },
-        ];
-        assert_eq!(has_conflict((1, 1), claims), false)
-    }
-
-    #[test]
-    fn has_conflict_returns_true_for_greater_than_2_overlaps () {
-        let claims = &vec![
-            Claim{ id: 1, left: 1, top: 3, width: 4, height: 4 },
-            Claim{ id: 2, left: 3, top: 1, width: 4, height: 4 },
-            Claim{ id: 3, left: 5, top: 5, width: 2, height: 2 },
-            Claim{ id: 4, left: 1, top: 2, width: 4, height: 5 },
-        ];
-        assert_eq!(has_conflict((3, 3), claims), true)
     }
 
     #[test]
