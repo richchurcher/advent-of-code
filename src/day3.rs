@@ -1,22 +1,40 @@
+use std::collections::HashSet;
 use std::num::ParseIntError;
 use regex::Regex;
 
-#[derive(Debug, PartialEq)]
+#[derive(Eq, Debug, Hash, PartialEq)]
 pub struct Claim {
     id: u32,
-    left: usize,
-    top: usize,
-    width: usize,
-    height: usize,
+    left: u32,
+    top: u32,
+    width: u32,
+    height: u32,
 }
 
 impl Claim {
-    fn includes(&self, loc: (usize, usize)) -> bool {
+    fn includes(&self, loc: (u32, u32)) -> bool {
         let (left, top) = loc;
+        let right = self.left + self.width - 1;
+        let bottom = self.top + self.height - 1;
+
         self.left <= left
-            && self.left + self.width - 1 >= left
+            && right >= left
             && self.top <= top
-            && self.top + self.height - 1 >= top
+            && bottom >= top
+    }
+
+    fn has_conflict_with(&self, other: &Claim) -> bool {
+        let right = self.left + self.width;
+        let bottom = self.top + self.height;
+
+        for y in self.top..bottom {
+            for x in self.left..right {
+                if other.includes((x, y)) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 }
 
@@ -37,7 +55,7 @@ pub fn parse_claims (input: &str) -> Result<Vec<Claim>, ParseIntError> {
     Ok(claims)
 }
 
-pub fn sheet_dimensions (claims: &[Claim]) -> (usize, usize) {
+pub fn sheet_dimensions (claims: &[Claim]) -> (u32, u32) {
     let mut right = 0;
     let mut bottom = 0;
 
@@ -51,10 +69,10 @@ pub fn sheet_dimensions (claims: &[Claim]) -> (usize, usize) {
             bottom = b;
         }
     }
-    (right as usize, bottom as usize)
+    (right, bottom)
 }
 
-pub fn has_conflict (loc: (usize, usize), claims: &[Claim]) -> bool {
+pub fn has_conflict (loc: (u32, u32), claims: &[Claim]) -> bool {
     let mut overlaps = 0;
 
     for claim in claims.iter() {
@@ -89,6 +107,25 @@ pub fn conflict_area (claims: &[Claim]) -> u32 {
             .fold(0, |sum, col| sum + *col as u32))
 }
 
+#[aoc(day3, part2)]
+pub fn best_claim (claims: &[Claim]) -> u32 {
+    let mut conflicts: HashSet<&Claim> = HashSet::new();
+
+    for claim in claims.iter() {
+        for compare in claims.iter() {
+            if claim.id == compare.id {
+                continue;
+            }
+            if claim.has_conflict_with(compare) {
+                conflicts.insert(claim);
+                conflicts.insert(compare);
+            }
+        }
+    }
+
+    let best = claims.iter().find(|claim| !conflicts.contains(claim)).unwrap();
+    best.id
+}
 
 #[cfg(test)]
 
@@ -184,6 +221,17 @@ pub fn conflict_area (claims: &[Claim]) -> u32 {
             Claim{ id: 2, left: 3, top: 1, width: 4, height: 4 },
             Claim{ id: 3, left: 5, top: 5, width: 2, height: 2 },
         ];
-        assert_eq!(conflict_area(claims), 5)
+        assert_eq!(conflict_area(claims), 4)
+    }
+
+    #[test]
+    fn best_claim_identifies_the_claim_without_conflicts () {
+        let claims = &vec![
+            Claim{ id: 1, left: 1, top: 3, width: 4, height: 4 },
+            Claim{ id: 2, left: 3, top: 1, width: 4, height: 4 },
+            Claim{ id: 3, left: 5, top: 5, width: 2, height: 2 },
+            Claim{ id: 4, left: 1, top: 4, width: 2, height: 1 },
+        ];
+        assert_eq!(best_claim(claims), 3)
     }
 
