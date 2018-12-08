@@ -58,7 +58,7 @@ pub fn parse_claims (input: &str) -> Result<Vec<Claim>, ParseIntError> {
 #[aoc(day3, part1)]
 pub fn conflict_area (claims: &[Claim]) -> u32 {
     let mut points = HashSet::<(u32, u32)>::new();
-    let mut conflicts = 0;
+    let mut conflicts = HashSet::<(u32, u32)>::new();
 
     for claim in claims.iter() {
         let right = claim.left + claim.width;
@@ -66,14 +66,14 @@ pub fn conflict_area (claims: &[Claim]) -> u32 {
 
         for y in claim.top..bottom {
             for x in claim.left..right {
-                let occupied = points.insert((x, y));
-                if occupied {
-                    conflicts += 1;
+                let available = points.insert((x, y));
+                if !available {
+                    conflicts.insert((x, y));
                 }
             }
         }
     }
-    conflicts
+    conflicts.iter().count() as u32
 }
 
 #[aoc(day3, part2)]
