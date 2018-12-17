@@ -19,27 +19,14 @@ fn populate_events (input: &str) -> HashMap<String, HashMap<u32, u32>> {
             },
             "falls" => {
                 sleep_time = parse_time(parts[1]);
-                let times = guards.entry(guard.clone());
-                match times {
-                    Entry::Occupied(t) => {
-                        *t.into_mut().entry(sleep_time).or_insert(0) += 1;
-                    },
-                    _ => unreachable!(),
-                }
+                increment_time(&mut guards, &guard, sleep_time);
             },
             "wakes" => {
                 let wake_time: u32 = parse_time(parts[1]);
+                sleep_time += 1;
 
                 for minute in sleep_time..=wake_time {
-                    let times = guards.entry(guard.clone());
-                    match times {
-                        Entry::Occupied(t) => {
-                            if minute != sleep_time {
-                                *t.into_mut().entry(minute).or_insert(0) += 1;
-                            }
-                        },
-                        _ => unreachable!(),
-                    }
+                    increment_time(&mut guards, &guard, minute);
                 }
             },
             _ => continue,
@@ -54,10 +41,20 @@ fn sort_by_datetime (input: &str) -> Vec<&str> {
     records
 }
 
-fn parse_time (input: &str) -> u32 {
-    let mut time = input[3..].to_string();
+fn parse_time (raw_time: &str) -> u32 {
+    let mut time = raw_time[3..].to_string();
     time.pop();
     time.parse().unwrap()
+}
+
+fn increment_time (guards: &mut HashMap<String, HashMap<u32, u32>>, guard: &String, time: u32) {
+    let times = guards.entry(guard.to_string());
+    match times {
+        Entry::Occupied(t) => {
+            *t.into_mut().entry(time).or_insert(0) += 1;
+        },
+        _ => unreachable!(),
+    }
 }
 
 #[aoc(day4, part1)]
