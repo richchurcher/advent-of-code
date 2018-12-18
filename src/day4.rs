@@ -19,11 +19,9 @@ fn parse_log (input: &str) -> HashMap<u32, HashMap<u32, u32>> {
             },
             "falls" => {
                 sleep_time = parse_time(parts[1]);
-                increment_time(&mut guards, guard, sleep_time);
             },
             "wakes" => {
                 let wake_time: u32 = parse_time(parts[1]);
-                sleep_time += 1;
 
                 for minute in sleep_time..wake_time {
                     increment_time(&mut guards, guard, minute);
@@ -96,7 +94,6 @@ fn find_sleepiest_minute_overall (guards: &HashMap<u32, HashMap<u32, u32>>) -> u
             }
         }
     }
-    println!("#{}: {} ({})", sleepiest_guard, sleepiest_minute, sleep_count);
     sleepiest_guard * sleepiest_minute
 }
 
