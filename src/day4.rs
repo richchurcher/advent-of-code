@@ -25,7 +25,7 @@ fn parse_log (input: &str) -> HashMap<u32, HashMap<u32, u32>> {
                 let wake_time: u32 = parse_time(parts[1]);
                 sleep_time += 1;
 
-                for minute in sleep_time..=wake_time {
+                for minute in sleep_time..wake_time {
                     increment_time(&mut guards, guard, minute);
                 }
             },
@@ -136,5 +136,6 @@ fn find_sleepiest_minute_overall (guards: &HashMap<u32, HashMap<u32, u32>>) -> u
     #[test]
     fn find_sleepiest_minute_overall_correct_with_sample_data () {
         let sample = "[1518-11-01 00:00] Guard #10 begins shift\n[1518-11-01 00:05] falls asleep\n[1518-11-01 00:25] wakes up\n[1518-11-01 00:30] falls asleep\n[1518-11-01 00:55] wakes up\n[1518-11-01 23:58] Guard #99 begins shift\n[1518-11-02 00:40] falls asleep\n[1518-11-02 00:50] wakes up\n[1518-11-03 00:05] Guard #10 begins shift\n[1518-11-03 00:24] falls asleep\n[1518-11-03 00:29] wakes up\n[1518-11-04 00:02] Guard #99 begins shift\n[1518-11-04 00:36] falls asleep\n[1518-11-04 00:46] wakes up\n[1518-11-05 00:03] Guard #99 begins shift\n[1518-11-05 00:45] falls asleep\n[1518-11-05 00:55] wakes up\n";
-        assert_eq!(find_sleepiest_minute_overall(&parse_log(&sample)), 0)
+        assert_eq!(find_sleepiest_minute_overall(&parse_log(&sample)), 4455)
     }
+
