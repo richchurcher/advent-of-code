@@ -121,10 +121,8 @@ fn find_sleepiest_minute_overall (guards: &HashMap<u32, HashMap<u32, u32>>) -> u
         // "[1518-11-01 00:30] falls asleep",
         // "[1518-11-01 00:31] wakes up",
         expected.entry(10).or_insert_with(HashMap::new).insert(30, 1);
-        expected.entry(10).or_insert_with(HashMap::new).insert(31, 1);
         expected.entry(10).or_insert_with(HashMap::new).insert(5, 1);
         expected.entry(10).or_insert_with(HashMap::new).insert(6, 1);
-        expected.entry(10).or_insert_with(HashMap::new).insert(7, 1);
 
         let unsorted = "[1518-11-01 00:05] falls asleep\n[1518-11-01 00:07] wakes up\n[1518-11-01 00:00] Guard #10 begins shift\n[1518-11-01 00:30] falls asleep\n[1518-11-01 00:31] wakes up";
         assert_eq!(parse_log(unsorted), expected)
