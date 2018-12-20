@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+use std::collections::HashSet;
+
 #[aoc(day5, part1)]
 fn find_stable (input: &str) -> usize {
     let polymer: Vec<char> = input.chars().collect();
@@ -13,6 +15,24 @@ fn find_stable (input: &str) -> usize {
         this_count = stable.iter().count();
     }
     this_count
+}
+
+#[aoc(day5, part2)]
+fn find_improved_stable (input: &str) -> usize {
+    let units = find_unit_types(input);
+    let mut best_length = input.len();
+
+    for unit in units.iter() {
+        let polymer_without: String = input
+            .chars()
+            .filter(|c| *unit != c.to_lowercase().next().unwrap())
+            .collect();
+        let length = find_stable(polymer_without.as_str());
+        if length < best_length {
+            best_length = length;
+        }
+    }
+    best_length
 }
 
 fn reaction (polymer: &Vec<char>) -> Vec<char> {
@@ -59,6 +79,15 @@ fn will_react (first: &char, second: &char) -> bool {
     }
 
     true
+}
+
+fn find_unit_types (polymer: &str) -> Vec<char> {
+    let mut types = HashSet::<char>::new();
+    let chars: Vec<char> = polymer.chars().collect();
+    for c in chars.into_iter() {
+        types.insert(c.to_lowercase().next().unwrap());
+    }
+    types.into_iter().collect()
 }
 
 #[cfg(test)]
@@ -108,5 +137,18 @@ fn will_react (first: &char, second: &char) -> bool {
 
     #[test]
     fn find_stable_correct_for_sample_data () {
-        assert_eq!(find_stable("dabAcCaCBAcCcaDA"), 10)
+        assert_eq!(find_stable(&"dabAcCaCBAcCcaDA"), 10)
     }
+
+    #[test]
+    fn find_unit_types_correct_for_small_sample () {
+        let mut actual = find_unit_types(&"dabAacCaCbAa");
+        actual.sort_unstable();
+        assert_eq!(actual, vec!['a', 'b', 'c', 'd'])
+    }
+
+    #[test]
+    fn find_improved_stable_correct_for_sample_data () {
+        assert_eq!(find_improved_stable("dabAcCaCBAcCcaDA"), 4)
+    }
+
